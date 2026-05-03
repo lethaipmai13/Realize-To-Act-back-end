@@ -1,0 +1,132 @@
+{
+  "entities": {
+    "AvailabilitySlot": {
+      "title": "Availability Slot",
+      "description": "Represents a user's availability for a specific day.",
+      "type": "object",
+      "properties": {
+        "day": { "type": "string" },
+        "slots": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["day", "slots"]
+    },
+    "User": {
+      "title": "User",
+      "description": "A user profile (school or community partner).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["school", "community-partner"] },
+        "email": { "type": "string" },
+        "avatar": { "type": "string" },
+        "location": { "type": "string" },
+        "contactName": { "type": "string" },
+        "availability": { "type": "array", "items": { "$ref": "AvailabilitySlot" } },
+        "dropOffLocation": { "type": "string" },
+        "needDropOffAssistance": { "type": "boolean" },
+        "description": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["id", "name", "type", "email"]
+    },
+    "ConnectionRequest": {
+      "title": "Connection Request",
+      "description": "A request for a connection or resource sharing.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fromId": { "type": "string" },
+        "toId": { "type": "string" },
+        "fromName": { "type": "string" },
+        "fromAvatar": { "type": "string" },
+        "type": { "type": "string", "enum": ["received", "sent"] },
+        "status": { "type": "string", "enum": ["pending", "approved", "denied"] },
+        "item": { "type": "string" },
+        "quantity": { "type": "number" },
+        "distance": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "postedAt": { "type": "string" },
+        "availableUntil": { "type": "string" },
+        "description": { "type": "string" },
+        "availability": { "type": "array", "items": { "$ref": "AvailabilitySlot" } },
+        "isNew": { "type": "boolean" }
+      },
+      "required": ["id", "fromId", "toId", "status", "item", "quantity", "timestamp"]
+    },
+    "Document": {
+      "title": "Document",
+      "description": "An administrative document related to a connection.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "fromName": { "type": "string" },
+        "toName": { "type": "string" },
+        "fromId": { "type": "string" },
+        "toId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "signed"] },
+        "dueDate": { "type": "string" },
+        "signedDate": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "itemDescription": { "type": "string" }
+      },
+      "required": ["id", "title", "fromId", "toId", "status", "itemDescription"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A message within a chat.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "serverTimestamp": { "type": "number" },
+        "isSuggestedTime": { "type": "boolean" },
+        "suggestedTimes": { "type": "array", "items": { "type": "string" } },
+        "confirmedTime": { "type": "string" },
+        "meetingNote": { "type": "string" }
+      },
+      "required": ["id", "senderId", "text", "timestamp"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "A conversation between two users.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "participants": { "type": "array", "items": { "type": "string" } },
+        "participantNames": { "type": "object" },
+        "participantAvatars": { "type": "object" },
+        "lastMessage": { "type": "string" },
+        "lastMessageTimestamp": { "type": "number" },
+        "unreadCount": { "type": "object" },
+        "isRecentlyApproved": { "type": "boolean" }
+      },
+      "required": ["id", "participants"]
+    }
+  },
+  "firestore": {
+    "/users": {
+      "schema": "User",
+      "description": "Storage for user profiles."
+    },
+    "/connections": {
+      "schema": "ConnectionRequest",
+      "description": "Storage for resource and connection requests."
+    },
+    "/documents": {
+      "schema": "Document",
+      "description": "Storage for legal and administrative documents."
+    },
+    "/chats": {
+      "schema": "Chat",
+      "description": "Storage for chat metadata."
+    },
+    "/chats/{chatId}/messages": {
+      "schema": "Message",
+      "description": "Storage for messages within a specific chat."
+    }
+  }
+}
